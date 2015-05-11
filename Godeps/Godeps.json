@@ -89,6 +89,10 @@
 			"Rev": "cd738dde20f0b3782516181b0866c9bb9db47401"
 		},
 		{
+			"ImportPath": "github.com/lebauce/swift",
+			"Rev": "677cb70f5d40fa1a81ddb32f872615a57bb42381"
+		},
+		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
 			"Rev": "57bccd1ccd43f94bb17fdd8bf3007059b802f85e"
 		},

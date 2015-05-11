@@ -10,6 +10,7 @@
 - [Filesystem storage driver](storage-drivers/filesystem.md)
 - [In-memory storage driver](storage-drivers/inmemory.md)
 - [S3 storage driver](storage-drivers/s3.md)
+- [Openstack Swift storage driver](storage-drivers/swift.md)
 - [Notifications](notifications.md)
 - [Docker Registry HTTP API V2](spec/api.md)
 - [Docker Registry v2 authentication via central service](spec/auth/token.md)
