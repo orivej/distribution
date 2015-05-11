@@ -42,7 +42,7 @@ Features:
 - New, more efficient implementation
 - Simplified deployment
 - Full API specification for V2 protocol
-- Pluggable storage system (s3, azure, filesystem and inmemory supported)
+- Pluggable storage system (s3, azure, swift, filesystem and inmemory supported)
 - Immutable manifest references ([#46](https://github.com/docker/distribution/issues/46))
 - Webhook notification system ([#42](https://github.com/docker/distribution/issues/42))
 - Native TLS Support ([#132](https://github.com/docker/distribution/pull/132))
