@@ -1,6 +1,6 @@
 <!--GITHUB
 page_title: Configure a Registry
-page_description: Explains how to deploy a registry 
+page_description: Explains how to deploy a registry
 page_keywords: registry, service, images, repository
 IGNORES-->
 
@@ -43,6 +43,14 @@ storage:
 		v4auth: true
 		chunksize: 5242880
 		rootdirectory: /s3/object/name/prefix
+	swift:
+		username: username
+		password: password
+		authurl: https://storage.myprovider.com/v2.0
+		tenant: tenantname
+		region: fr
+		container: containername
+		rootdirectory: /swift/object/name/prefix
 	cache:
 		layerinfo: inmemory
 	maintenance:
@@ -98,7 +106,7 @@ http:
 	debug:
 		addr: localhost:5001
 notifications:
-	endpoints: 
+	endpoints:
 		- name: alistener
 		  disabled: false
 		  url: https://my.listener.com/event
@@ -151,8 +159,14 @@ REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/tmp/registry/test
 This variable overrides the `/tmp/registry` value to the `/tmp/registry/test`
 directory.
 
+>**Note**: If an environment variable changes a map value into a string, such
+>as replacing the storage driver type with `REGISTRY_STORAGE=filesystem`, then
+>all sub-fields will be erased. As such, specifying the storage type in the
+>environment will remove all parameters related to the old storage
+>configuration.
 
-## version 
+
+## version
 
 ```yaml
 version: 0.1
@@ -160,7 +174,7 @@ version: 0.1
 
 The `version` option is **required**. It specifies the configuration's version.
 It is expected to remain a top-level field, to allow for a consistent version
-check before parsing the remainder of the configuration file. 
+check before parsing the remainder of the configuration file.
 
 ## log
 
@@ -272,7 +286,7 @@ You must configure one backend; if you configure more, the registry returns an e
 
 Use the `cache` subsection to enable caching of data accessed in the storage
 backend. Currently, the only available cache provides fast access to layer
-metadata. This, if configured, uses the `layerinfo` field.  
+metadata. This, if configured, uses the `layerinfo` field.
 
 You can set `layerinfo` field to `redis` or `inmemory`.  The `redis` value uses
 a Redis pool to cache layer metadata.  The `inmemory` value uses an in memory
@@ -290,7 +304,7 @@ here so make sure there is adequate space available.
 
 ### azure
 
-This storage backend uses Microsoft's Azure Storage platform. 
+This storage backend uses Microsoft's Azure Storage platform.
 
 <table>
   <tr>
@@ -330,7 +344,7 @@ This storage backend uses Microsoft's Azure Storage platform.
     <td>
       Name of the Azure container into which to store data.
     </td>
-  </tr>  
+  </tr>
 </table>
 
 
@@ -449,7 +463,7 @@ This storage backend uses Amazon's Simple Storage Service (S3).
     <td>
       This is a prefix that will be applied to all S3 keys to allow you to segment data in your bucket if necessary.
     </td>
-  </tr> 
+  </tr>
 </table>
 
 ### Maintenance
@@ -460,7 +474,7 @@ maintenance functions which are related to storage can be configured under the m
 ### Upload Purging
 
 Upload purging is a background process that periodically removes orphaned files from the upload
-directories of the registry.  Upload purging is enabled by default.  To 
+directories of the registry.  Upload purging is enabled by default.  To
  configure upload directory purging, the following parameters
 must be set.
 
@@ -469,10 +483,111 @@ must be set.
   --------- | -------- | -----------
 `enabled` | yes | Set to true to enable upload purging.  Default=true. |
 `age` | yes | Upload directories which are older than this age will be deleted.  Default=168h (1 week)
-`interval` | yes | The interval between upload directory purging.  Default=24h.  
+`interval` | yes | The interval between upload directory purging.  Default=24h.
 `dryrun` | yes |  dryrun can be set to true to obtain a summary of what directories will be deleted.  Default=false.
 
-Note: `age` and `interval` are strings containing a number with optional fraction and a unit suffix: e.g. 45m, 2h10m, 168h (1 week).  
+Note: `age` and `interval` are strings containing a number with optional fraction and a unit suffix: e.g. 45m, 2h10m, 168h (1 week).
+
+### Openstack Swift
+
+This storage backend uses Openstack Swift object storage.
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Required</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      <code>authurl</code>
+    </td>
+    <td>
+      yes
+    </td>
+    <td>
+      URL for obtaining an auth token.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>username</code>
+    </td>
+    <td>
+      yes
+    </td>
+    <td>
+      Your Openstack user name.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>password</code>
+    </td>
+    <td>
+      yes
+    </td>
+    <td>
+      Your Openstack password.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>region</code>
+    </td>
+    <td>
+      no
+    </td>
+    <td>
+      The Openstack region in which your container exists.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>container</code>
+    </td>
+    <td>
+      yes
+    </td>
+    <td>
+      The container name in which you want to store the registry's data.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>tenant</code>
+    </td>
+    <td>
+      no
+    </td>
+    <td>
+      Your Openstack tenant name.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>chunksize</code>
+    </td>
+    <td>
+      no
+    </td>
+    <td>
+      Size of the data segments for the Swift Dynamic Large Objects. This value should be a number (defaults to 5M).
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>rootdirectory</code>
+    </td>
+    <td>
+      no
+    </td>
+    <td>
+      This is a prefix that will be applied to all Swift keys to allow you to segment data in your container if necessary.
+    </td>
+  </tr>
+</table>
+
 
 ## auth
 
@@ -499,7 +614,7 @@ The `silly` auth is only for development purposes. It simply checks for the
 existence of the `Authorization` header in the HTTP request. It has no regard for
 the header's value. If the header does not exist, the `silly` auth responds with a
 challenge response, echoing back the realm, service, and scope that access was
-denied for. 
+denied for.
 
 The following values are used to configure the response:
 
@@ -539,7 +654,7 @@ The following values are used to configure the response:
 
 Token based authentication allows the authentication system to be decoupled from
 the registry. It is a well established authentication paradigm with a high
-degree of security. 
+degree of security.
 
 <table>
   <tr>
@@ -586,14 +701,14 @@ the token so it must match the value configured for the issuer.
       <code>rootcertbundle</code>
     </td>
     <td>
-			yes 
+			yes
      </td>
     <td>
 The absolute path to the root certificate bundle. This bundle contains the
 public part of the certificates that is used to sign authentication tokens.
      </td>
   </tr>
-</table> 
+</table>
 
 For more information about Token based authentication configuration, see the [specification.]
 
@@ -607,7 +722,7 @@ object they're wrapping. This means a registry middleware must implement the
 `driver.StorageDriver`.
 
 Currently only one middleware, `cloudfront`, a storage middleware, is supported
-in the registry implementation. 
+in the registry implementation.
 
 ```yaml
 middleware:
@@ -741,7 +856,7 @@ configuration may contain both.
       <codde>production</code>,<codde>staging</code>, or
       <codde>development</code>.
     </td>
-  </tr>  
+  </tr>
   <tr>
     <td>
       <code>endpoint</code>
@@ -750,9 +865,9 @@ configuration may contain both.
       no
     </td>
     <td>
-      Specify the enterprise Bugsnag endpoint. 
+      Specify the enterprise Bugsnag endpoint.
     </td>
-  </tr>  
+  </tr>
 </table>
 
 
@@ -785,7 +900,7 @@ configuration may contain both.
     <td>
       New Relic application name.
     </td>
-  </tr> 
+  </tr>
      <tr>
     <td>
       <code>verbose</code>
@@ -796,7 +911,7 @@ configuration may contain both.
     <td>
       Enable New Relic debugging output on stdout.
     </td>
-  </tr> 
+  </tr>
 </table>
 
 ## http
@@ -804,6 +919,7 @@ configuration may contain both.
 ```yaml
 http:
 	addr: localhost:5000
+	net: tcp
 	prefix: /my/nested/registry/
 	secret: asecretforlocaldevelopment
 	tls:
@@ -832,7 +948,20 @@ The `http` option details the configuration for the HTTP server that hosts the r
       yes
     </td>
     <td>
-      The <code>HOST:PORT</code> for which the server should accept connections.
+     The address for which the server should accept connections. The form depends on a network type (see <code>net</code> option):
+     <code>HOST:PORT</code> for tcp and <code>FILE</code> for a unix socket.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>net</code>
+    </td>
+    <td>
+      no
+    </td>
+    <td>
+     The network which is used to create a listening socket. Known networks are <code>unix</code> and <code>tcp</code>.
+     The default empty value means tcp.
     </td>
   </tr>
     <tr>
@@ -909,7 +1038,7 @@ and proxy connections to the registry server.
     <td>
       An array of absolute paths to a x509 CA file
     </td>
-  </tr>  
+  </tr>
 </table>
 
 
@@ -928,7 +1057,7 @@ specifies the `HOST:PORT` on which the debug server should accept connections.
 
 ```yaml
 notifications:
-	endpoints: 
+	endpoints:
 		- name: alistener
 		  disabled: false
 		  url: https://my.listener.com/event
@@ -959,7 +1088,7 @@ Endpoints is a list of named services (URLs) that can accept event notifications
       yes
     </td>
     <td>
-A human readable name for the service.     
+A human readable name for the service.
 </td>
   </tr>
   <tr>
@@ -983,7 +1112,7 @@ A boolean to enable/disable notifications for a service.
     <td>
 The URL to which events should be published.
     </td>
-  </tr>  
+  </tr>
    <tr>
     <td>
       <code>headers</code>
@@ -994,7 +1123,7 @@ The URL to which events should be published.
     <td>
       Static headers to add to each request.
     </td>
-  </tr> 
+  </tr>
   <tr>
     <td>
       <code>timeout</code>
@@ -1015,7 +1144,7 @@ The URL to which events should be published.
       </ul>
     If you omit the suffix, the system interprets the value as nanoseconds.
     </td>
-  </tr>  
+  </tr>
   <tr>
     <td>
       <code>threshold</code>
@@ -1026,7 +1155,7 @@ The URL to which events should be published.
     <td>
       An integer specifying how long to wait before backing off a failure.
     </td>
-  </tr>  
+  </tr>
   <tr>
     <td>
       <code>backoff</code>
@@ -1048,7 +1177,7 @@ The URL to which events should be published.
       </ul>
     If you omit the suffix, the system interprets the value as nanoseconds.
     </td>
-  </tr>  
+  </tr>
 </table>
 
 
@@ -1123,7 +1252,7 @@ with the [pool](#pool) subsection.
     <td>
       Timeout for connecting to a redis instance.
     </td>
-  </tr>  
+  </tr>
   <tr>
     <td>
       <code>readtimeout</code>
@@ -1134,7 +1263,7 @@ with the [pool](#pool) subsection.
     <td>
       Timeout for reading from redis connections.
     </td>
-  </tr>   
+  </tr>
   <tr>
     <td>
       <code>writetimeout</code>
@@ -1145,7 +1274,7 @@ with the [pool](#pool) subsection.
     <td>
       Timeout for writing to redis connections.
     </td>
-  </tr>   
+  </tr>
 </table>
 
 
@@ -1200,7 +1329,7 @@ Configure the behavior of the Redis connection pool.
       sets the amount time to wait before closing
   inactive connections.
     </td>
-  </tr>  
+  </tr>
 </table>
 
 
@@ -1210,7 +1339,7 @@ The following is a simple example you can use for local development:
 
 ```yaml
 version: 0.1
-log: 
+log:
 	level: debug
 storage:
     filesystem:
@@ -1223,7 +1352,7 @@ http:
 ```
 
 The above configures the registry instance to run on port `5000`, binding to
-`localhost`, with the `debug` server enabled. Registry data storage is in the 
+`localhost`, with the `debug` server enabled. Registry data storage is in the
 `/tmp/registry-dev` directory. Logging is in `debug` mode, which is the most
 verbose.
 
@@ -1236,7 +1365,7 @@ Both are generally useful for local development.
 
 This example illustrates how to configure storage middleware in a registry.
 Middleware allows the registry to serve layers via a content delivery network
-(CDN). This is useful for reducing requests to the storage layer.  
+(CDN). This is useful for reducing requests to the storage layer.
 
 Currently, the registry supports [Amazon
 Cloudfront](http://aws.amazon.com/cloudfront/). You can only use Cloudfront in
@@ -1257,7 +1386,7 @@ conjunction with the S3 storage driver.
   </tr>
   <tr>
     <td><code>options:</code></td>
-    <td> 
+    <td>
     A set of key/value options to configure the middleware.
     <ul>
     <li><code>baseurl:</code> The Cloudfront base URL.</li>
@@ -1287,4 +1416,3 @@ middleware:
 >**Note**: Cloudfront keys exist separately to other AWS keys.  See
 >[the documentation on AWS credentials](http://docs.aws.amazon.com/AWSSecurityCredentials/1.0/AboutAWSCredentials.html#KeyPairs)
 >for more information.
-

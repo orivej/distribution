@@ -31,7 +31,7 @@ implementation.
 
 Registry 2.0 is the first release of the next-generation registry. This is primarily
 focused on implementing the [new registry
-API](https://github.com/docker/distribution/blob/master/doc/spec/api.md), with
+API](https://github.com/docker/distribution/blob/master/docs/spec/api.md), with
 a focus on security and performance.
 
 #### Registry 2.0
@@ -42,7 +42,7 @@ Features:
 - New, more efficient implementation
 - Simplified deployment
 - Full API specification for V2 protocol
-- Pluggable storage system (s3, azure, filesystem and inmemory supported)
+- Pluggable storage system (s3, azure, swift, filesystem and inmemory supported)
 - Immutable manifest references ([#46](https://github.com/docker/distribution/issues/46))
 - Webhook notification system ([#42](https://github.com/docker/distribution/issues/42))
 - Native TLS Support ([#132](https://github.com/docker/distribution/pull/132))
